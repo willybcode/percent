@@ -1,0 +1,105 @@
+import {React, useState, useEffect} from 'react'
+import QuesSvg from '../parts/QuesSvg'
+import InputField from '../parts/InputField'
+import Result from '../parts/Result'
+import Formula from '../parts/Formula'
+
+function Mode5() {
+
+    const [a, setA] = useState('')
+    const [b, setB] = useState('')
+    const [c, setC] = useState('')
+    const [res, setRes] = useState("")
+
+    const formula = '(A * C + B) / C * 100'
+    const [tip, setTip] = useState(false)
+    const [frm, setFrm] = useState(null)
+    let temp_res = ''
+
+    function calc(ga, gb, gc) {
+        const A = ga
+        const B = gb
+        const C = gc
+        let R = ''
+        R = parseFloat(((A * C + B) / C * 100).toFixed(10))
+        if (isNaN(R) || !isFinite(R) || (A == B && B == 0) || A === '' || B === '' || C == 0) 
+            R = ''
+
+        return R
+
+    }
+
+    useEffect(() => {
+        temp_res = calc(a, b, c)
+        setRes(temp_res)
+        if (!(temp_res === '')) {
+            let fm = '(' + a + ' * ' + c + ' + ' + b + ') / ' + c + ' * 100=' +
+                    temp_res
+            setFrm(fm)
+        } else {
+            setFrm(null)
+        }
+
+    }, [a, b, c])
+
+    return (
+        <div
+            className='bg-gray-900/70  hover:bg-sky-900/70 hover:ring-2 transition-all duration-1000  rounded-xl relative h-52 w-80 p-3 text-slate-100 font-semibold m-2 overflow-hidden'>
+            <div onClick={() => setTip(!tip)} className=' absolute z-10'>
+                <QuesSvg/>
+            </div>
+            <div
+                className={`  absolute inset-0 text-white ${ !tip && ' scale-0 '}  transition-all duration-1000 hover:bg-slate-950  bg-slate-600 p-3  flex justify-center    rounded-xl`}>
+                <span className='flex items-center'>
+                    <span className='flex flex-col items-center'>
+                        <span className='mx-2'>Formula :
+                        </span><Formula frm={formula}/>
+                    </span>
+                    <span className={`${ !frm && 'hidden'} ml-5 flex flex-col items-center`}>
+
+                        <span className='mx-2 '>Result :
+                        </span><Formula frm={frm}/>
+                    </span>
+                </span>
+            </div>
+            <div className='flex flex-col h-5/6 mt-6 justify-between'>
+
+                <span className='flex  space-x-1  mb-5 mt-2'>
+                    <span>Percentage of mixed fraction</span>
+                    <span className='flex items-center'>
+
+                        <span className=''><InputField
+                            ch={(e) => {
+                setA(parseFloat(e.target.value))
+            }}
+                            ph='A'/></span>
+                        <span className='flex flex-col items-center'>
+                            <span className=''><InputField
+                                ch={(e) => {
+                setB(parseFloat(e.target.value))
+            }}
+                                ph='B'/></span>
+
+                            <hr className='h-1 border-none bg-gray-950 my-2 w-11/12 rounded-full '/>
+                            <span className=''><InputField
+                                ch={(e) => {
+                setC(parseFloat(e.target.value))
+            }}
+                                ph='C'/></span>
+                        </span>
+
+                    </span>
+
+                </span>
+                <span className='flex flex-row w-full'>
+                    <span className='mr-3 inline-block'>Answer:</span>
+                    <Result res={res}/>
+                    <span className='ml-2'>%</span>
+                </span>
+            </div>
+
+        </div>
+    )
+}
+
+export default Mode5
